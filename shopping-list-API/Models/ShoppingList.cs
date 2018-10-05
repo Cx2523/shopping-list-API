@@ -11,6 +11,9 @@ namespace shopping_list_API.Models
         public string name { get; set; }
         public string description { get; set; }
         public DateTime dateCreated { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
         public IEnumerable<Item> Items { get; set; }
+
     }
 }

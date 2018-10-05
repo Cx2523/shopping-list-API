@@ -8,37 +8,37 @@ using System.Web.Http;
 
 namespace shopping_list_API.Controllers
 {
-    public class UserController : ApiController
+    public class ItemController : ApiController
     {
         private Context _context = null;
 
-        public UserController()
+        public ItemController()
         {
             _context = new Context();
         }
 
-        public IEnumerable<User> Get()
+        public IEnumerable<Item> Get()
         {
-            var users = _context.Users.ToList();
+            var users = _context.Items.ToList();
             return users;
         }
 
-        public User Get(int id)
+        public Item Get(int id)
         {
             // by default .net api gets simple types from uri
-            var user = _context.Users.Find(id);
+            var user = _context.Items.Find(id);
             return user;
         }
 
-        public void Post(User user)
+        public void Post(Item user)
         {
-            _context.Users.Add(user);
+            _context.Items.Add(user);
             _context.SaveChanges();
         }
 
-        public void Put(User user)
+        public void Put(Item user)
         {
-            var result = _context.Users.Find(user.Id);
+            var result = _context.Items.Find(user.Id);
             if (result != null)
             {
                 _context.Entry(result).CurrentValues.SetValues(user);
@@ -50,8 +50,8 @@ namespace shopping_list_API.Controllers
         {
             try
             {
-                var user = _context.Users.Find(id);
-                _context.Users.Remove(user);
+                var user = _context.Items.Find(id);
+                _context.Items.Remove(user);
                 _context.SaveChanges();
             }
             catch (Exception e)

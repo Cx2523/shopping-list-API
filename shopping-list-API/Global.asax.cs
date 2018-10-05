@@ -12,6 +12,7 @@ namespace shopping_list_API
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
+
         }
     }
 }
