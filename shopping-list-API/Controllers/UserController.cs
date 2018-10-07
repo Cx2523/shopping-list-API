@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
+using System.Data.Entity;
 
 namespace shopping_list_API.Controllers
 {
@@ -23,11 +24,26 @@ namespace shopping_list_API.Controllers
             return users;
         }
 
-        public User Get(int id)
+        public IHttpActionResult Get(int id)
         {
             // by default .net api gets simple types from uri
-            var user = _context.Users.Find(id);
-            return user;
+
+            try
+            {
+                var user = _context.Users
+                .Include(u => u.Items)
+                .Include(u => u.ShoppingLists)
+                .Where(u => u.Id == id)
+                .FirstOrDefault();
+                return Ok(user);
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
+            
         }
 
         public void Post(User user)

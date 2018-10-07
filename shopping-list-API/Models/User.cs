@@ -13,7 +13,7 @@ namespace shopping_list_API.Models
         public string firstname { get; set; }
         public string lastname { get; set; }
         public string email { get; set; }
-        public IEnumerable<Item> Items { get; set; }
-        public IEnumerable<ShoppingList> ShoppingLists{ get; set; }
+        public ICollection<Item> Items { get; set; }
+        public ICollection<ShoppingList> ShoppingLists{ get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -11,9 +12,8 @@ namespace shopping_list_API.Models
         public string name { get; set; }
         public string description { get; set; }
         public DateTime dateCreated { get; set; }
+        [Required]
         public int UserId { get; set; }
-        public User User { get; set; }
-        public IEnumerable<Item> Items { get; set; }
-
+        public ICollection<Item> Items { get; set; }
     }
 }
