@@ -1,4 +1,5 @@
-﻿using shopping_list_API.Models;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using shopping_list_API.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -8,7 +9,7 @@ using System.Web;
 
 namespace shopping_list_API
 {
-    public class Context : DbContext
+    public class Context : IdentityDbContext<User>
     {
      
         public Context() : base(rdsHelper.GetRDSConnectionString() ?? "DefaultConnection")
@@ -17,7 +18,12 @@ namespace shopping_list_API
         }
 
 
-        public DbSet<User> Users { get; set; }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
+
+        public DbSet<Profile> Profiles { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<ShoppingList> ShoppingLists { get; set; }
     }

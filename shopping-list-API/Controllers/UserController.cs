@@ -31,9 +31,10 @@ namespace shopping_list_API.Controllers
             try
             {
                 var user = _context.Users
-                .Include(u => u.Items)
-                .Include(u => u.ShoppingLists)
-                .Where(u => u.Id == id)
+                .Include(u => u.Profile)
+                .Include(u => u.Profile.Items)
+                .Include(u => u.Profile.ShoppingLists)
+                .Where(u => u.Id == id.ToString())
                 .FirstOrDefault();
                 return Ok(user);
             }
