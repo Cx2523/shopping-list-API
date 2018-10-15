@@ -9,7 +9,7 @@ namespace shopping_list_API.Models
 {
     public class User : IdentityUser
     {
-        public int ProfileId { get; set; }
+        //public int ProfileId { get; set; }
         public Profile Profile { get; set; }
     }
 }

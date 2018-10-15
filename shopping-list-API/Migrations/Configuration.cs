@@ -5,14 +5,14 @@ namespace shopping_list_API.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<shopping_list_API.Context>
+    internal sealed class Configuration : DbMigrationsConfiguration<shopping_list_API.ApplicationContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(shopping_list_API.Context context)
+        protected override void Seed(shopping_list_API.ApplicationContext context)
         {
             //  This method will be called after migrating to the latest version.
 

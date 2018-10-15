@@ -9,22 +9,35 @@ using System.Web;
 
 namespace shopping_list_API
 {
-    public class Context : IdentityDbContext<User>
+    public class ApplicationContext : IdentityDbContext<User>
     {
-     
-        public Context() : base(rdsHelper.GetRDSConnectionString() ?? "DefaultConnection")
+
+        public ApplicationContext() : base(rdsHelper.GetRDSConnectionString() ?? "DefaultConnection")
         {
-            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<Context>());
+            //Database.SetInitializer(new DropCreateDatabaseIfModelChanges<ApplicationContext>());
+            Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationContext>());
         }
 
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        public static ApplicationContext Create()
         {
-            base.OnModelCreating(modelBuilder);
+            return new ApplicationContext();
         }
 
+        //public DbSet<User> Users { get; set; }
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<ShoppingList> ShoppingLists { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+
+            modelBuilder.Entity<Profile>()
+               .HasRequired(p => p.User)
+               .WithRequiredDependent(u => u.Profile);
+
+            base.OnModelCreating(modelBuilder);
+
+        }
     }
 }

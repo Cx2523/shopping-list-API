@@ -6,16 +6,21 @@ using System.Linq;
 using System.Web;
 using System.Web.Http;
 using System.Data.Entity;
+using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security;
+using Microsoft.AspNet.Identity.Owin;
+using shopping_list_API.Security;
+using System.Threading.Tasks;
 
 namespace shopping_list_API.Controllers
 {
     public class UserController : ApiController
     {
-        private Context _context = null;
+        private ApplicationContext _context = null;
 
         public UserController()
         {
-            _context = new Context();
+            _context = new ApplicationContext();
         }
 
         public IEnumerable<User> Get()
@@ -24,7 +29,7 @@ namespace shopping_list_API.Controllers
             return users;
         }
 
-        public IHttpActionResult Get(int id)
+        public IHttpActionResult Get(string id)
         {
             // by default .net api gets simple types from uri
 
@@ -32,9 +37,7 @@ namespace shopping_list_API.Controllers
             {
                 var user = _context.Users
                 .Include(u => u.Profile)
-                .Include(u => u.Profile.Items)
-                .Include(u => u.Profile.ShoppingLists)
-                .Where(u => u.Id == id.ToString())
+                .Where(u => u.Id == id)
                 .FirstOrDefault();
                 return Ok(user);
             }
@@ -43,14 +46,32 @@ namespace shopping_list_API.Controllers
 
                 throw e;
             }
-
-            
         }
 
-        public void Post(User user)
+        public async Task<string> Post(UserAPI userApi)
         {
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var authManager = HttpContext.Current.GetOwinContext().Authentication;
+
+            User user = userManager.Find(userApi.UserName, userApi.Password);
+
+
+            if (user == null)
+            {
+                user = new User { UserName = userApi.UserName, Profile = new Profile() };
+                var result = await userManager.CreateAsync(user, userApi.Password);
+
+                if (result.Succeeded)
+                {
+                    //await authManager.SignIn(user)
+                    return "neato";
+                }
+
+                //authManager.SignIn(
+                //    new AuthenticationProperties { IsPersistent = false }, ident);
+                //return Redirect(user.ReturnUrl ?? Url.Action("Index", "Home"));
+            }
+            return "asdfaasfafsa";
         }
 
         public void Put(User user)

@@ -10,11 +10,11 @@ namespace shopping_list_API.Controllers
 {
     public class ShoppingListController : ApiController
     {
-        private Context _context = null;
+        private ApplicationContext _context = null;
 
         public ShoppingListController()
         {
-            _context = new Context();
+            _context = new ApplicationContext();
         }
 
         public IEnumerable<ShoppingList> Get()
