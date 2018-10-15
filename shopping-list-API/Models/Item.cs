@@ -14,7 +14,7 @@ namespace shopping_list_API.Models
         public string description { get; set; }
         public float costPerUnit { get; set; }
         [Required]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         //public User User { get; set; }
         public int? ShoppingListId { get; set; }
         //public ShoppingList ShoppingList { get; set; }

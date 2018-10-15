@@ -17,31 +17,31 @@ namespace shopping_list_API.Controllers
             _context = new ApplicationContext();
         }
 
-        public IEnumerable<Item> Get()
+        public IEnumerable<Item> Get(string userId)
         {
-            var users = _context.Items.ToList();
-            return users;
+            var items = _context.Items.Where(i => i.UserId == userId).ToList();
+            return items;
         }
 
-        public Item Get(int id)
+        public Item GetById(string id)
         {
             // by default .net api gets simple types from uri
-            var user = _context.Items.Find(id);
-            return user;
+            var item = _context.Items.Find(id);
+            return item;
         }
 
-        public void Post(Item user)
+        public void Post(Item item)
         {
-            _context.Items.Add(user);
+            _context.Items.Add(item);
             _context.SaveChanges();
         }
 
-        public void Put(Item user)
+        public void Put(Item item)
         {
-            var result = _context.Items.Find(user.Id);
+            var result = _context.Items.Find(item.Id);
             if (result != null)
             {
-                _context.Entry(result).CurrentValues.SetValues(user);
+                _context.Entry(result).CurrentValues.SetValues(item);
                 _context.SaveChanges();
             }
         }
@@ -50,8 +50,8 @@ namespace shopping_list_API.Controllers
         {
             try
             {
-                var user = _context.Items.Find(id);
-                _context.Items.Remove(user);
+                var item = _context.Items.Find(id);
+                _context.Items.Remove(item);
                 _context.SaveChanges();
             }
             catch (Exception e)

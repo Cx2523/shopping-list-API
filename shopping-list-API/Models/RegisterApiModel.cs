@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 
 namespace shopping_list_API.Models
 {
-    public class UserAPI
+    public class RegisterApiModel
     {
         [Required]
         public string UserName { get; set; }
@@ -12,5 +13,12 @@ namespace shopping_list_API.Models
         [Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+        [Required]
+        public string firstname { get; set; }
+        [Required]
+        public string lastname { get; set; }
+        [Required]
+        public string email { get; set; }
+
     }
 }

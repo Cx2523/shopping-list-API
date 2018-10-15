@@ -11,9 +11,11 @@ using Microsoft.Owin.Security;
 using Microsoft.AspNet.Identity.Owin;
 using shopping_list_API.Security;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace shopping_list_API.Controllers
 {
+    [RoutePrefix("api/User")]
     public class UserController : ApiController
     {
         private ApplicationContext _context = null;
@@ -23,66 +25,71 @@ namespace shopping_list_API.Controllers
             _context = new ApplicationContext();
         }
 
-        public IEnumerable<User> Get()
-        {
-            var users = _context.Users.ToList();
-            return users;
-        }
+        //public IEnumerable<User> Get()
+        //{
+        //    var users = _context.Users.ToList();
+        //    return users;
+        //}
 
-        public IHttpActionResult Get(string id)
-        {
-            // by default .net api gets simple types from uri
+        //public IHttpActionResult Get(string id)
+        //{
+        //    // by default .net api gets simple types from uri
 
-            try
-            {
-                var user = _context.Users
-                .Include(u => u.Profile)
-                .Where(u => u.Id == id)
-                .FirstOrDefault();
-                return Ok(user);
-            }
-            catch (Exception e)
-            {
+        //    try
+        //    {
+        //        var user = _context.Users
+        //        .Include(u => u.Profile)
+        //        .Where(u => u.Id == id)
+        //        .FirstOrDefault();
+        //        return Ok(user);
+        //    }
+        //    catch (Exception e)
+        //    {
 
-                throw e;
-            }
-        }
+        //        throw e;
+        //    }
+        //}
 
-        public async Task<string> Post(UserAPI userApi)
+        [HttpPost]
+        [ActionName("Register")]
+        public async Task<IHttpActionResult> Post(RegisterApiModel registerApiModel)
         {
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var authManager = HttpContext.Current.GetOwinContext().Authentication;
 
-            User user = userManager.Find(userApi.UserName, userApi.Password);
-
+            User user = userManager.Find(registerApiModel.UserName, registerApiModel.Password);
 
             if (user == null)
             {
-                user = new User { UserName = userApi.UserName, Profile = new Profile() };
-                var result = await userManager.CreateAsync(user, userApi.Password);
+                user = new User { UserName = registerApiModel.UserName, Profile = new Profile { firstname = registerApiModel.firstname, lastname = registerApiModel.lastname, email = registerApiModel.email } };
+                var result = await userManager.CreateAsync(user, registerApiModel.Password);
 
                 if (result.Succeeded)
                 {
-                    //await authManager.SignIn(user)
-                    return "neato";
+                    return Ok(await userManager.FindAsync(registerApiModel.UserName, registerApiModel.Password));
                 }
-
-                //authManager.SignIn(
-                //    new AuthenticationProperties { IsPersistent = false }, ident);
-                //return Redirect(user.ReturnUrl ?? Url.Action("Index", "Home"));
+                else
+                {
+                    throw new HttpResponseException(HttpStatusCode.InternalServerError);
+                }
             }
-            return "asdfaasfafsa";
-        }
-
-        public void Put(User user)
-        {
-            var result = _context.Users.Find(user.Id);
-            if (result != null)
+            else
             {
-                _context.Entry(result).CurrentValues.SetValues(user);
-                _context.SaveChanges();
+                return null;
             }
         }
+
+        [HttpPost]
+        [ActionName("Login")]
+        public async Task<IHttpActionResult> Post(LoginApiModel loginApiModel)
+        {
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            User user = await userManager.FindAsync(loginApiModel.UserName, loginApiModel.Password);
+            if (user == null)
+                return BadRequest("could not find user");
+
+            return Ok(user); 
+        }
+
 
         public void Delete(int id)
         {
